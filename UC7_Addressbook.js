@@ -26,7 +26,7 @@ class Contact {
     }
 
     validateZip(zip) {
-        const zipRegex = /^[1-9][0-9]{5}$/; // Example: Indian PIN code format
+        const zipRegex = /^[1-9][0-9]{5}$/;
         if (!zipRegex.test(zip)) {
             throw new Error(`Invalid Zip Code format.`);
         }
@@ -34,7 +34,7 @@ class Contact {
     }
 
     validatePhone(phone) {
-        const phoneRegex = /^[6-9][0-9]{9}$/; // Example: Indian mobile number format
+        const phoneRegex = /^[6-9][0-9]{9}$/;
         if (!phoneRegex.test(phone)) {
             throw new Error(`Invalid Phone Number format.`);
         }
@@ -51,59 +51,32 @@ class Contact {
 }
 
 class AddressBook {
-    constructor() {
+    constructor(name) {
+        this.name = name;
         this.contacts = [];
     }
 
     addContact(contact) {
-        if (this.contacts.some(c => c.phone === contact.phone || c.email === contact.email)) {
-            throw new Error("Contact with the same phone or email already exists.");
+        // Check for duplicate entry using filter
+        let isDuplicate = this.contacts
+            .filter(c => c.firstName === contact.firstName && c.lastName === contact.lastName)
+            .reduce((exists, c) => exists || true, false);  // Reduce to a boolean
+
+        if (isDuplicate) {
+            throw new Error(`Duplicate Entry: Contact '${contact.firstName} ${contact.lastName}' already exists in '${this.name}'.`);
         }
+
         this.contacts.push(contact);
-        console.log("Contact added successfully!");
-    }
-
-    findContact(firstName, lastName) {
-        return this.contacts.find(contact => contact.firstName === firstName && contact.lastName === lastName);
-    }
-
-    editContact(firstName, lastName, newDetails) {
-        let contact = this.findContact(firstName, lastName);
-        if (!contact) {
-            throw new Error(`Contact ${firstName} ${lastName} not found.`);
-        }
-
-        // Update fields if provided
-        if (newDetails.address) contact.address = contact.validateAddress(newDetails.address, "Address");
-        if (newDetails.city) contact.city = contact.validateAddress(newDetails.city, "City");
-        if (newDetails.state) contact.state = contact.validateAddress(newDetails.state, "State");
-        if (newDetails.zip) contact.zip = contact.validateZip(newDetails.zip);
-        if (newDetails.phone) contact.phone = contact.validatePhone(newDetails.phone);
-        if (newDetails.email) contact.email = contact.validateEmail(newDetails.email);
-
-        console.log(`Contact ${firstName} ${lastName} updated successfully!`);
-    }
-
-    deleteContact(firstName, lastName) {
-        const index = this.contacts.findIndex(contact => contact.firstName === firstName && contact.lastName === lastName);
-        if (index === -1) {
-            throw new Error(`Contact ${firstName} ${lastName} not found.`);
-        }
-        this.contacts.splice(index, 1);
-        console.log(`Contact ${firstName} ${lastName} deleted successfully!`);
-    }
-
-    getContactCount() {
-        return this.contacts.reduce((count) => count + 1, 0);
+        console.log(`Contact '${contact.firstName} ${contact.lastName}' added successfully to '${this.name}'!`);
     }
 
     displayContacts() {
-        console.log("Address Book Contacts:");
+        console.log(`Contacts in ${this.name}:`);
         if (this.contacts.length === 0) {
             console.log("No contacts available.");
             return;
         }
-        this.contacts.forEach((contact, index) => {
+        this.contacts.map((contact, index) => {
             console.log(`${index + 1}. ${contact.firstName} ${contact.lastName}, ${contact.address}, ${contact.city}, ${contact.state}, ${contact.zip}, ${contact.phone}, ${contact.email}`);
         });
     }
@@ -111,24 +84,19 @@ class AddressBook {
 
 // Example Usage:
 try {
-    let myAddressBook = new AddressBook();
-    
+    let myAddressBook = new AddressBook("Personal");
+
     let contact1 = new Contact("John", "Doe", "1234 Main St", "Delhi", "Delhi", "110001", "9876543210", "john.doe@example.com");
     myAddressBook.addContact(contact1);
 
     let contact2 = new Contact("Alice", "Smith", "5678 Park Ave", "Mumbai", "Maharashtra", "400001", "9123456789", "alice.smith@example.com");
     myAddressBook.addContact(contact2);
 
-    myAddressBook.displayContacts();
-
-    // Get contact count
-    console.log("Total Contacts:", myAddressBook.getContactCount());
-
-    // Delete a contact
-    myAddressBook.deleteContact("John", "Doe");
+    // Attempting to add a duplicate contact
+    let duplicateContact = new Contact("John", "Doe", "5678 Park Ave", "Mumbai", "Maharashtra", "400001", "9123456789", "john.duplicate@example.com");
+    myAddressBook.addContact(duplicateContact);  // This should throw an error
 
     myAddressBook.displayContacts();
-    console.log("Total Contacts after deletion:", myAddressBook.getContactCount());
 } catch (error) {
     console.error("Error:", error.message);
 }
