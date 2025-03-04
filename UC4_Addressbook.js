@@ -63,6 +63,27 @@ class AddressBook {
         console.log("Contact added successfully!");
     }
 
+    findContact(firstName, lastName) {
+        return this.contacts.find(contact => contact.firstName === firstName && contact.lastName === lastName);
+    }
+
+    editContact(firstName, lastName, newDetails) {
+        let contact = this.findContact(firstName, lastName);
+        if (!contact) {
+            throw new Error(`Contact ${firstName} ${lastName} not found.`);
+        }
+
+        // Update fields if provided
+        if (newDetails.address) contact.address = contact.validateAddress(newDetails.address, "Address");
+        if (newDetails.city) contact.city = contact.validateAddress(newDetails.city, "City");
+        if (newDetails.state) contact.state = contact.validateAddress(newDetails.state, "State");
+        if (newDetails.zip) contact.zip = contact.validateZip(newDetails.zip);
+        if (newDetails.phone) contact.phone = contact.validatePhone(newDetails.phone);
+        if (newDetails.email) contact.email = contact.validateEmail(newDetails.email);
+
+        console.log(`Contact ${firstName} ${lastName} updated successfully!`);
+    }
+
     displayContacts() {
         console.log("Address Book Contacts:");
         this.contacts.forEach((contact, index) => {
@@ -80,6 +101,11 @@ try {
 
     let contact2 = new Contact("Alice", "Smith", "5678 Park Ave", "Mumbai", "Maharashtra", "400001", "9123456789", "alice.smith@example.com");
     myAddressBook.addContact(contact2);
+
+    myAddressBook.displayContacts();
+
+    // Edit contact
+    myAddressBook.editContact("John", "Doe", { phone: "9234567890", email: "john.new@example.com", city: "Bangalore" });
 
     myAddressBook.displayContacts();
 } catch (error) {
