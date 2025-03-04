@@ -57,10 +57,9 @@ class AddressBook {
     }
 
     addContact(contact) {
-        // Check for duplicate entry using filter
         let isDuplicate = this.contacts
             .filter(c => c.firstName === contact.firstName && c.lastName === contact.lastName)
-            .reduce((exists, c) => exists || true, false);  // Reduce to a boolean
+            .reduce((exists, c) => exists || true, false);
 
         if (isDuplicate) {
             throw new Error(`Duplicate Entry: Contact '${contact.firstName} ${contact.lastName}' already exists in '${this.name}'.`);
@@ -68,6 +67,16 @@ class AddressBook {
 
         this.contacts.push(contact);
         console.log(`Contact '${contact.firstName} ${contact.lastName}' added successfully to '${this.name}'!`);
+    }
+
+    searchByCity(city) {
+        let results = this.contacts.filter(contact => contact.city.toLowerCase() === city.toLowerCase());
+        return results.length > 0 ? results.map(contact => `${contact.firstName} ${contact.lastName}`) : "No contacts found in this city.";
+    }
+
+    searchByState(state) {
+        let results = this.contacts.filter(contact => contact.state.toLowerCase() === state.toLowerCase());
+        return results.length > 0 ? results.map(contact => `${contact.firstName} ${contact.lastName}`) : "No contacts found in this state.";
     }
 
     displayContacts() {
@@ -92,9 +101,14 @@ try {
     let contact2 = new Contact("Alice", "Smith", "5678 Park Ave", "Mumbai", "Maharashtra", "400001", "9123456789", "alice.smith@example.com");
     myAddressBook.addContact(contact2);
 
-    // Attempting to add a duplicate contact
-    let duplicateContact = new Contact("John", "Doe", "5678 Park Ave", "Mumbai", "Maharashtra", "400001", "9123456789", "john.duplicate@example.com");
-    myAddressBook.addContact(duplicateContact);  // This should throw an error
+    let contact3 = new Contact("Bob", "Johnson", "9101 Elm St", "Delhi", "Delhi", "110002", "9898989898", "bob.johnson@example.com");
+    myAddressBook.addContact(contact3);
+
+    // Search for people in a specific City
+    console.log("People in Delhi:", myAddressBook.searchByCity("Delhi"));
+
+    // Search for people in a specific State
+    console.log("People in Maharashtra:", myAddressBook.searchByState("Maharashtra"));
 
     myAddressBook.displayContacts();
 } catch (error) {
