@@ -69,14 +69,20 @@ class AddressBook {
         console.log(`Contact '${contact.firstName} ${contact.lastName}' added successfully to '${this.name}'!`);
     }
 
-    searchByCity(city) {
-        let results = this.contacts.filter(contact => contact.city.toLowerCase() === city.toLowerCase());
-        return results.length > 0 ? results.map(contact => `${contact.firstName} ${contact.lastName}`) : "No contacts found in this city.";
+    viewPersonsByCity() {
+        return this.contacts.reduce((grouped, contact) => {
+            grouped[contact.city] = grouped[contact.city] || [];
+            grouped[contact.city].push(`${contact.firstName} ${contact.lastName}`);
+            return grouped;
+        }, {});
     }
 
-    searchByState(state) {
-        let results = this.contacts.filter(contact => contact.state.toLowerCase() === state.toLowerCase());
-        return results.length > 0 ? results.map(contact => `${contact.firstName} ${contact.lastName}`) : "No contacts found in this state.";
+    viewPersonsByState() {
+        return this.contacts.reduce((grouped, contact) => {
+            grouped[contact.state] = grouped[contact.state] || [];
+            grouped[contact.state].push(`${contact.firstName} ${contact.lastName}`);
+            return grouped;
+        }, {});
     }
 
     displayContacts() {
@@ -104,11 +110,14 @@ try {
     let contact3 = new Contact("Bob", "Johnson", "9101 Elm St", "Delhi", "Delhi", "110002", "9898989898", "bob.johnson@example.com");
     myAddressBook.addContact(contact3);
 
-    // Search for people in a specific City
-    console.log("People in Delhi:", myAddressBook.searchByCity("Delhi"));
+    let contact4 = new Contact("Emma", "Davis", "555 Willow Rd", "Pune", "Maharashtra", "411001", "9999999999", "emma.davis@example.com");
+    myAddressBook.addContact(contact4);
 
-    // Search for people in a specific State
-    console.log("People in Maharashtra:", myAddressBook.searchByState("Maharashtra"));
+    // View persons grouped by City
+    console.log("Persons by City:", myAddressBook.viewPersonsByCity());
+
+    // View persons grouped by State
+    console.log("Persons by State:", myAddressBook.viewPersonsByState());
 
     myAddressBook.displayContacts();
 } catch (error) {
