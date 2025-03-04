@@ -69,19 +69,17 @@ class AddressBook {
         console.log(`Contact '${contact.firstName} ${contact.lastName}' added successfully to '${this.name}'!`);
     }
 
-    viewPersonsByCity() {
-        return this.contacts.reduce((grouped, contact) => {
-            grouped[contact.city] = grouped[contact.city] || [];
-            grouped[contact.city].push(`${contact.firstName} ${contact.lastName}`);
-            return grouped;
+    countByCity() {
+        return this.contacts.reduce((countMap, contact) => {
+            countMap[contact.city] = (countMap[contact.city] || 0) + 1;
+            return countMap;
         }, {});
     }
 
-    viewPersonsByState() {
-        return this.contacts.reduce((grouped, contact) => {
-            grouped[contact.state] = grouped[contact.state] || [];
-            grouped[contact.state].push(`${contact.firstName} ${contact.lastName}`);
-            return grouped;
+    countByState() {
+        return this.contacts.reduce((countMap, contact) => {
+            countMap[contact.state] = (countMap[contact.state] || 0) + 1;
+            return countMap;
         }, {});
     }
 
@@ -113,11 +111,11 @@ try {
     let contact4 = new Contact("Emma", "Davis", "555 Willow Rd", "Pune", "Maharashtra", "411001", "9999999999", "emma.davis@example.com");
     myAddressBook.addContact(contact4);
 
-    // View persons grouped by City
-    console.log("Persons by City:", myAddressBook.viewPersonsByCity());
+    // Count contacts by City
+    console.log("Number of persons by City:", myAddressBook.countByCity());
 
-    // View persons grouped by State
-    console.log("Persons by State:", myAddressBook.viewPersonsByState());
+    // Count contacts by State
+    console.log("Number of persons by State:", myAddressBook.countByState());
 
     myAddressBook.displayContacts();
 } catch (error) {
