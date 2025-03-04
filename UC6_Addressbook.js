@@ -93,6 +93,10 @@ class AddressBook {
         console.log(`Contact ${firstName} ${lastName} deleted successfully!`);
     }
 
+    getContactCount() {
+        return this.contacts.reduce((count) => count + 1, 0);
+    }
+
     displayContacts() {
         console.log("Address Book Contacts:");
         if (this.contacts.length === 0) {
@@ -117,10 +121,14 @@ try {
 
     myAddressBook.displayContacts();
 
+    // Get contact count
+    console.log("Total Contacts:", myAddressBook.getContactCount());
+
     // Delete a contact
     myAddressBook.deleteContact("John", "Doe");
 
     myAddressBook.displayContacts();
+    console.log("Total Contacts after deletion:", myAddressBook.getContactCount());
 } catch (error) {
     console.error("Error:", error.message);
 }
