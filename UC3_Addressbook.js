@@ -50,10 +50,38 @@ class Contact {
     }
 }
 
+class AddressBook {
+    constructor() {
+        this.contacts = [];
+    }
+
+    addContact(contact) {
+        if (this.contacts.some(c => c.phone === contact.phone || c.email === contact.email)) {
+            throw new Error("Contact with the same phone or email already exists.");
+        }
+        this.contacts.push(contact);
+        console.log("Contact added successfully!");
+    }
+
+    displayContacts() {
+        console.log("Address Book Contacts:");
+        this.contacts.forEach((contact, index) => {
+            console.log(`${index + 1}. ${contact.firstName} ${contact.lastName}, ${contact.address}, ${contact.city}, ${contact.state}, ${contact.zip}, ${contact.phone}, ${contact.email}`);
+        });
+    }
+}
+
 // Example Usage:
 try {
-    let contact = new Contact("John", "Doe", "1234 Main St", "Delhi", "Delhi", "110001", "9876543210", "john.doe@example.com");
-    console.log("Contact added successfully:", contact);
+    let myAddressBook = new AddressBook();
+    
+    let contact1 = new Contact("John", "Doe", "1234 Main St", "Delhi", "Delhi", "110001", "9876543210", "john.doe@example.com");
+    myAddressBook.addContact(contact1);
+
+    let contact2 = new Contact("Alice", "Smith", "5678 Park Ave", "Mumbai", "Maharashtra", "400001", "9123456789", "alice.smith@example.com");
+    myAddressBook.addContact(contact2);
+
+    myAddressBook.displayContacts();
 } catch (error) {
     console.error("Error:", error.message);
 }
